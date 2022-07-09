@@ -4,19 +4,19 @@ namespace ESP8266_IoT {
         None,
         ConnectWifi,
         ConnectThingSpeak,
-        ConnectKidsIot,
-        InitKidsIot,
-        UploadKidsIot,
-        DisconnectKidsIot,
-        ConnectMqtt,
+        // ConnectKidsIot,
+        // InitKidsIot,
+        // UploadKidsIot,
+        // DisconnectKidsIot,
+        // ConnectMqtt,
     }
 
-    export enum KidsIotSwitchState {
-        //% block="on"
-        on = 1,
-        //% block="off"
-        off = 2
-    }
+    // export enum KidsIotSwitchState {
+    //     //% block="on"
+    //     on = 1,
+    //     //% block="off"
+    //     off = 2
+    // }
 
     export enum SchemeList {
         //% block="TCP"
@@ -36,13 +36,13 @@ namespace ESP8266_IoT {
 
     let wifi_connected: boolean = false
     let thingspeak_connected: boolean = false
-    let kidsiot_connected: boolean = false
-    let mqttBrokerConnected: boolean = false
+    // let kidsiot_connected: boolean = false
+    // let mqttBrokerConnected: boolean = false
     let userToken_def: string = ""
     let topic_def: string = ""
-    const mqttSubscribeHandlers: { [topic: string]: (message: string) => void } = {}
-    const mqttSubscribeQos: { [topic: string]: number } = {}
-    let mqtthost_def = "ELECFREAKS"
+    // const mqttSubscribeHandlers: { [topic: string]: (message: string) => void } = {}
+    // const mqttSubscribeQos: { [topic: string]: number } = {}
+    // let mqtthost_def = "ELECFREAKS"
     let iftttkey_def = ""
     let iftttevent_def = ""
 
@@ -51,8 +51,8 @@ namespace ESP8266_IoT {
 
     const THINGSPEAK_HOST = "api.thingspeak.com"
     const THINGSPEAK_PORT = "80"
-    const KIDSIOT_HOST = "139.159.161.57"
-    const KIDSIOT_PORT = "5555"
+    // const KIDSIOT_HOST = "139.159.161.57"
+    // const KIDSIOT_PORT = "5555"
 
     const EspEventSource = 3000
     const EspEventValue = {
@@ -66,11 +66,11 @@ namespace ESP8266_IoT {
         ConnectMqtt: Cmd.ConnectMqtt,
         PostIFTTT: 255
     }
-    const KidsIotEventSource = 3100
-    const KidsIotEventValue = {
-        switchOn: KidsIotSwitchState.on,
-        switchOff: KidsIotSwitchState.off
-    }
+    // const KidsIotEventSource = 3100
+    // const KidsIotEventValue = {
+    //     switchOn: KidsIotSwitchState.on,
+    //     switchOff: KidsIotSwitchState.off
+    // }
 
     let TStoSendStr = ""
 
@@ -192,147 +192,147 @@ namespace ESP8266_IoT {
         return thingspeak_connected === state
     }
 
-    /*-----------------------------------kidsiot---------------------------------*/
-    /**
-     * Connect to kidsiot
-     */
-    //% subcategory=KidsIot weight=50
-    //% blockId=initkidiot block="Connect KidsIot with userToken: %userToken Topic: %topic"
-    export function connectKidsiot(userToken: string, topic: string): void {
-        userToken_def = userToken
-        topic_def = topic
-        currentCmd = Cmd.ConnectKidsIot
-        sendAT(`AT+CIPSTART="TCP","${KIDSIOT_HOST}",${KIDSIOT_PORT}`)
-        control.waitForEvent(EspEventSource, EspEventValue.ConnectKidsIot)
-        pause(100)
-        const jsonText = `{"topic":"${topic}","userToken":"${userToken}","op":"init"}`
-        currentCmd = Cmd.InitKidsIot
-        sendAT(`AT+CIPSEND=${jsonText.length + 2}`)
-        control.waitForEvent(EspEventSource, EspEventValue.InitKidsIot)
-        if (kidsiot_connected) {
-            sendAT(jsonText)
-            control.waitForEvent(EspEventSource, EspEventValue.InitKidsIot)
-        }
-        pause(1500)
-    }
+    // /*-----------------------------------kidsiot---------------------------------*/
+    // /**
+    // //  * Connect to kidsiot
+    // //  */
+    // //% subcategory=KidsIot weight=50
+    // //% blockId=initkidiot block="Connect KidsIot with userToken: %userToken Topic: %topic"
+    // export function connectKidsiot(userToken: string, topic: string): void {
+    //     userToken_def = userToken
+    //     topic_def = topic
+    //     currentCmd = Cmd.ConnectKidsIot
+    //     sendAT(`AT+CIPSTART="TCP","${KIDSIOT_HOST}",${KIDSIOT_PORT}`)
+    //     control.waitForEvent(EspEventSource, EspEventValue.ConnectKidsIot)
+    //     pause(100)
+    //     const jsonText = `{"topic":"${topic}","userToken":"${userToken}","op":"init"}`
+    //     currentCmd = Cmd.InitKidsIot
+    //     sendAT(`AT+CIPSEND=${jsonText.length + 2}`)
+    //     control.waitForEvent(EspEventSource, EspEventValue.InitKidsIot)
+    //     if (kidsiot_connected) {
+    //         sendAT(jsonText)
+    //         control.waitForEvent(EspEventSource, EspEventValue.InitKidsIot)
+    //     }
+    //     pause(1500)
+    // }
 
-    /**
-     * upload data to kidsiot
-     */
-    //% subcategory=KidsIot weight=45
-    //% blockId=uploadkidsiot block="Upload data %data to kidsiot"
-    export function uploadKidsiot(data: number): void {
-        data = Math.floor(data)
-        const jsonText = `{"topic":"${topic_def}","userToken":"${userToken_def}","op":"up","data":"${data}"}`
-        currentCmd = Cmd.UploadKidsIot
-        sendAT(`AT+CIPSEND=${jsonText.length + 2}`)
-        control.waitForEvent(EspEventSource, EspEventValue.UploadKidsIot)
-        if (kidsiot_connected) {
-            sendAT(jsonText)
-            control.waitForEvent(EspEventSource, EspEventValue.UploadKidsIot)
-        }
-        pause(1500)
-    }
+    // /**
+    // //  * upload data to kidsiot
+    // //  */
+    // //% subcategory=KidsIot weight=45
+    // //% blockId=uploadkidsiot block="Upload data %data to kidsiot"
+    // export function uploadKidsiot(data: number): void {
+    //     data = Math.floor(data)
+    //     const jsonText = `{"topic":"${topic_def}","userToken":"${userToken_def}","op":"up","data":"${data}"}`
+    //     currentCmd = Cmd.UploadKidsIot
+    //     sendAT(`AT+CIPSEND=${jsonText.length + 2}`)
+    //     control.waitForEvent(EspEventSource, EspEventValue.UploadKidsIot)
+    //     if (kidsiot_connected) {
+    //         sendAT(jsonText)
+    //         control.waitForEvent(EspEventSource, EspEventValue.UploadKidsIot)
+    //     }
+    //     pause(1500)
+    // }
 
-    /**
-     * disconnect from kidsiot
-     */
-    //% subcategory=KidsIot weight=40
-    //% blockId=Disconnect block="Disconnect with kidsiot"
-    export function disconnectKidsiot(): void {
-        if (kidsiot_connected) {
-            const jsonText = `{"topic":"${topic_def}","userToken":"${userToken_def}","op":"close"}`
-            currentCmd = Cmd.DisconnectKidsIot
-            sendAT("AT+CIPSEND=" + (jsonText.length + 2))
-            control.waitForEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-            if (kidsiot_connected) {
-                sendAT(jsonText)
-                control.waitForEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-            }
-            pause(1500)
-        }
-    }
+    // /**
+    // //  * disconnect from kidsiot
+    // //  */
+    // //% subcategory=KidsIot weight=40
+    // //% blockId=Disconnect block="Disconnect with kidsiot"
+    // export function disconnectKidsiot(): void {
+    //     if (kidsiot_connected) {
+    //         const jsonText = `{"topic":"${topic_def}","userToken":"${userToken_def}","op":"close"}`
+    //         currentCmd = Cmd.DisconnectKidsIot
+    //         sendAT("AT+CIPSEND=" + (jsonText.length + 2))
+    //         control.waitForEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+    //         if (kidsiot_connected) {
+    //             sendAT(jsonText)
+    //             control.waitForEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+    //         }
+    //         pause(1500)
+    //     }
+    // }
 
-    /**
-     * Check if ESP8266 successfully connected to KidsIot
-     */
-    //% block="KidsIot connection %State"
-    //% subcategory="KidsIot" weight=35
-    export function kidsiotState(state: boolean) {
-        return kidsiot_connected === state
-    }
+    // /**
+    // //  * Check if ESP8266 successfully connected to KidsIot
+    // //  */
+    // //% block="KidsIot connection %State"
+    // //% subcategory="KidsIot" weight=35
+    // export function kidsiotState(state: boolean) {
+    //     return kidsiot_connected === state
+    // }
 
-    //% block="When switch %vocabulary"
-    //% subcategory="KidsIot" weight=30
-    //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
-    export function iotSwitchEvent(state: KidsIotSwitchState, handler: () => void) {
-        control.onEvent(KidsIotEventSource, state, handler)
-    }
+    // //% block="When switch %vocabulary"
+    // //% subcategory="KidsIot" weight=30
+    // //% state.fieldEditor="gridpicker" state.fieldOptions.columns=2
+    // export function iotSwitchEvent(state: KidsIotSwitchState, handler: () => void) {
+    //     control.onEvent(KidsIotEventSource, state, handler)
+    // }
 
-    /*----------------------------------MQTT-----------------------*/
-    /**
-     * Set  MQTT client
-     */
-    //% subcategory=MQTT weight=30
-    //% blockId=initMQTT block="Set MQTT client config|scheme: %scheme clientID: %clientID username: %username password: %password path: %path"
-    export function setMQTT(scheme: SchemeList, clientID: string, username: string, password: string, path: string): void {
-        sendAT(`AT+MQTTUSERCFG=0,${scheme},"${clientID}","${username}","${password}",0,0,"${path}"`, 1000)
-    }
+    // /*----------------------------------MQTT-----------------------*/
+    // /**
+    // //  * Set  MQTT client
+    // //  */
+    // //% subcategory=MQTT weight=30
+    // //% blockId=initMQTT block="Set MQTT client config|scheme: %scheme clientID: %clientID username: %username password: %password path: %path"
+    // export function setMQTT(scheme: SchemeList, clientID: string, username: string, password: string, path: string): void {
+    //     sendAT(`AT+MQTTUSERCFG=0,${scheme},"${clientID}","${username}","${password}",0,0,"${path}"`, 1000)
+    // }
 
-    /**
-     * Connect to MQTT broker
-     */
-    //% subcategory=MQTT weight=25
-    //% blockId=connectMQTT block="connect MQTT broker host: %host port: %port reconnect: $reconnect"
-    export function connectMQTT(host: string, port: number, reconnect: boolean): void {
-        mqtthost_def = host
-        const rec = reconnect ? 0 : 1
-        currentCmd = Cmd.ConnectMqtt
-        sendAT(`AT+MQTTCONN=0,"${host}",${port},${rec}`)
-        control.waitForEvent(EspEventSource, EspEventValue.ConnectMqtt)
-        Object.keys(mqttSubscribeQos).forEach(topic => {
-            const qos = mqttSubscribeQos[topic]
-            sendAT(`AT+MQTTSUB=0,"${topic}",${qos}`, 1000)
-        })
-    }
+    // /**
+    // //  * Connect to MQTT broker
+    // //  */
+    // //% subcategory=MQTT weight=25
+    // //% blockId=connectMQTT block="connect MQTT broker host: %host port: %port reconnect: $reconnect"
+    // export function connectMQTT(host: string, port: number, reconnect: boolean): void {
+    //     mqtthost_def = host
+    //     const rec = reconnect ? 0 : 1
+    //     currentCmd = Cmd.ConnectMqtt
+    //     sendAT(`AT+MQTTCONN=0,"${host}",${port},${rec}`)
+    //     control.waitForEvent(EspEventSource, EspEventValue.ConnectMqtt)
+    //     Object.keys(mqttSubscribeQos).forEach(topic => {
+    //         const qos = mqttSubscribeQos[topic]
+    //         sendAT(`AT+MQTTSUB=0,"${topic}",${qos}`, 1000)
+    //     })
+    // }
 
-    /**
-     * Check if ESP8266 successfully connected to mqtt broker
-     */
-    //% block="MQTT broker is connected"
-    //% subcategory="MQTT" weight=24
-    export function isMqttBrokerConnected() {
-        return mqttBrokerConnected
-    }
+    // /**
+    // //  * Check if ESP8266 successfully connected to mqtt broker
+    // //  */
+    // //% block="MQTT broker is connected"
+    // //% subcategory="MQTT" weight=24
+    // export function isMqttBrokerConnected() {
+    //     return mqttBrokerConnected
+    // }
 
-    /**
-     * send message
-     */
-    //% subcategory=MQTT weight=21
-    //% blockId=sendMQTT block="publish %msg to Topic:%topic with Qos:%qos"
-    //% msg.defl=hello
-    //% topic.defl=topic/1
-    export function publishMqttMessage(msg: string, topic: string, qos: QosList): void {
-        sendAT(`AT+MQTTPUB=0,"${topic}","${msg}",${qos},0`, 1000)
-    }
+    // /**
+    // //  * send message
+    // //  */
+    // //% subcategory=MQTT weight=21
+    // //% blockId=sendMQTT block="publish %msg to Topic:%topic with Qos:%qos"
+    // //% msg.defl=hello
+    // //% topic.defl=topic/1
+    // export function publishMqttMessage(msg: string, topic: string, qos: QosList): void {
+    //     sendAT(`AT+MQTTPUB=0,"${topic}","${msg}",${qos},0`, 1000)
+    // }
 
-    /**
-     * disconnect MQTT broker
-     */
-    //% subcategory=MQTT weight=15
-    //% blockId=breakMQTT block="Disconnect from broker"
-    export function breakMQTT(): void {
-        sendAT("AT+MQTTCLEAN=0", 1000)
-    }
+    // /**
+    // //  * disconnect MQTT broker
+    // //  */
+    // //% subcategory=MQTT weight=15
+    // //% blockId=breakMQTT block="Disconnect from broker"
+    // export function breakMQTT(): void {
+    //     sendAT("AT+MQTTCLEAN=0", 1000)
+    // }
 
-    //% block="when Topic: %topic have new $message with Qos: %qos"
-    //% subcategory=MQTT weight=10
-    //% draggableParameters
-    //% topic.defl=topic/1
-    export function MqttEvent(topic: string, qos: QosList, handler: (message: string) => void) {
-        mqttSubscribeHandlers[topic] = handler
-        mqttSubscribeQos[topic] = qos
-    }
+    // //% block="when Topic: %topic have new $message with Qos: %qos"
+    // //% subcategory=MQTT weight=10
+    // //% draggableParameters
+    // //% topic.defl=topic/1
+    // export function MqttEvent(topic: string, qos: QosList, handler: (message: string) => void) {
+    //     mqttSubscribeHandlers[topic] = handler
+    //     mqttSubscribeQos[topic] = qos
+    // }
 
     //////////----------------------------------- IFTTT--------------------------------/////////
     /**
@@ -350,16 +350,15 @@ namespace ESP8266_IoT {
      */
     //% subcategory=IFTTT weight=8
     //% blockId=postIFTTT block="post IFTTT with|value1:%value value2:%value2 value3:%value3"
+    // export function postIFTTT(value1: string, value2: string, value3: string): void {
+    //     let sendST1 = "AT+HTTPCLIENT=3,1,\"https://maker.ifttt.com/trigger/" + iftttevent_def + "/with/key/" + iftttkey_def + "\",,,2,"
+    //     let sendST2 = "\"{\\\"value1\\\":\\\"" + value1 + "\\\"\\\,\\\"value2\\\":\\\"" + value2 + "\\\"\\\,\\\"value3\\\":\\\"" + value3 + "\\\"}\""
+    //     let sendST = sendST1 + sendST2
+    //     sendAT(sendST, 1000)
+    //     //control.waitForEvent(EspEventSource, EspEventValue.PostIFTTT)
+    // }
     export function postIFTTT(value1: string, value2: string, value3: string): void {
-        let sendST1 = "AT+HTTPCLIENT=3,1,\"https://maker.ifttt.com/trigger/" + iftttevent_def + "/with/key/" + iftttkey_def + "\",,,2,"
-        let sendST2 = "\"{\\\"value1\\\":\\\"" + value1 + "\\\"\\\,\\\"value2\\\":\\\"" + value2 + "\\\"\\\,\\\"value3\\\":\\\"" + value3 + "\\\"}\""
-        let sendST = sendST1 + sendST2
-        sendAT(sendST, 1000)
-        //control.waitForEvent(EspEventSource, EspEventValue.PostIFTTT)
-    }
-
-    export function postIFTTT_TEST(): void {
-        let sendST1 = "AT+HTTPCLIENT=3,1,\"https://maker.ifttt.com/trigger/" + iftttevent_def + "/with/key/" + iftttkey_def + "\",,,2,"
+        let sendST1 = "AT+HTTPCLIENT=3,1,\"https://maker.ifttt.com/trigger/alertaDoYourBit/with/key/i6eXTfs6U4hv0qW6bok_jj9UNQZHbM65bwCA9xwHAyh"
         let sendST = sendST1
         sendAT(sendST, 1000)
         //control.waitForEvent(EspEventSource, EspEventValue.PostIFTTT)
@@ -372,23 +371,23 @@ namespace ESP8266_IoT {
         recvString += serial.readString()
         pause(1)
 
-        // received kids iot data
-        if (recvString.includes("switchoff")) {
-            recvString = ""
-            control.raiseEvent(KidsIotEventSource, KidsIotEventValue.switchOff)
-        } else if (recvString.includes("switchon")) {
-            recvString = ""
-            control.raiseEvent(KidsIotEventSource, KidsIotEventValue.switchOn)
-        }
+        // // received kids iot data
+        // if (recvString.includes("switchoff")) {
+        //     recvString = ""
+        //     control.raiseEvent(KidsIotEventSource, KidsIotEventValue.switchOff)
+        // } else if (recvString.includes("switchon")) {
+        //     recvString = ""
+        //     control.raiseEvent(KidsIotEventSource, KidsIotEventValue.switchOn)
+        // }
 
-        if (recvString.includes("MQTTSUBRECV")) {
-            recvString = recvString.slice(recvString.indexOf("MQTTSUBRECV"))
-            const recvStringSplit = recvString.split(",", 4)
-            const topic = recvStringSplit[1].slice(1, -1)
-            const message = recvStringSplit[3].slice(0, -2)
-            mqttSubscribeHandlers[topic] && mqttSubscribeHandlers[topic](message)
-            recvString = ""
-        }
+        // if (recvString.includes("MQTTSUBRECV")) {
+        //     recvString = recvString.slice(recvString.indexOf("MQTTSUBRECV"))
+        //     const recvStringSplit = recvString.split(",", 4)
+        //     const topic = recvStringSplit[1].slice(1, -1)
+        //     const message = recvStringSplit[3].slice(0, -2)
+        //     mqttSubscribeHandlers[topic] && mqttSubscribeHandlers[topic](message)
+        //     recvString = ""
+        // }
 
         if (recvString.includes("Congratu")) {
             recvString = ""
@@ -424,106 +423,106 @@ namespace ESP8266_IoT {
                     }
                 }
                 break
-            case Cmd.ConnectKidsIot:
-                if (recvString.includes(KIDSIOT_HOST)) {
-                    recvString = recvString.slice(recvString.indexOf(KIDSIOT_HOST))
-                    if (recvString.includes("CONNECT")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.ConnectKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.ConnectKidsIot)
-                    }
-                }
-                break
-            case Cmd.InitKidsIot:
-                if (recvString.includes("AT+CIPSEND")) {
-                    recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
-                    if (recvString.includes("OK")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
-                    }
-                } else {
-                    if (recvString.includes("SEND OK")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
-                    }
-                }
-                break
-            case Cmd.UploadKidsIot:
-                if (recvString.includes("AT+CIPSEND")) {
-                    recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
-                    if (recvString.includes("OK")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
-                    }
-                } else {
-                    if (recvString.includes("SEND OK")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
-                    }
-                }
-                break
-            case Cmd.DisconnectKidsIot:
-                if (recvString.includes("AT+CIPSEND")) {
-                    recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
-                    if (recvString.includes("OK")) {
-                        kidsiot_connected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-                    }
-                } else {
-                    if (recvString.includes("SEND OK")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-                    } else if (recvString.includes("ERROR")) {
-                        kidsiot_connected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
-                    }
-                }
-                break
-            case Cmd.ConnectMqtt:
-                if (recvString.includes(mqtthost_def)) {
-                    recvString = recvString.slice(recvString.indexOf(mqtthost_def))
-                    if (recvString.includes("OK")) {
-                        mqttBrokerConnected = true
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.ConnectMqtt)
-                    } else if (recvString.includes("ERROR")) {
-                        mqttBrokerConnected = false
-                        recvString = ""
-                        control.raiseEvent(EspEventSource, EspEventValue.ConnectMqtt)
-                    }
-                }
-                break
+            // case Cmd.ConnectKidsIot:
+            //     if (recvString.includes(KIDSIOT_HOST)) {
+            //         recvString = recvString.slice(recvString.indexOf(KIDSIOT_HOST))
+            //         if (recvString.includes("CONNECT")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.ConnectKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.ConnectKidsIot)
+            //         }
+            //     }
+            //     break
+            // case Cmd.InitKidsIot:
+            //     if (recvString.includes("AT+CIPSEND")) {
+            //         recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
+            //         if (recvString.includes("OK")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
+            //         }
+            //     } else {
+            //         if (recvString.includes("SEND OK")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.InitKidsIot)
+            //         }
+            //     }
+            //     break
+            // case Cmd.UploadKidsIot:
+            //     if (recvString.includes("AT+CIPSEND")) {
+            //         recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
+            //         if (recvString.includes("OK")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
+            //         }
+            //     } else {
+            //         if (recvString.includes("SEND OK")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.UploadKidsIot)
+            //         }
+            //     }
+            //     break
+            // case Cmd.DisconnectKidsIot:
+            //     if (recvString.includes("AT+CIPSEND")) {
+            //         recvString = recvString.slice(recvString.indexOf("AT+CIPSEND"))
+            //         if (recvString.includes("OK")) {
+            //             kidsiot_connected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+            //         }
+            //     } else {
+            //         if (recvString.includes("SEND OK")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+            //         } else if (recvString.includes("ERROR")) {
+            //             kidsiot_connected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.DisconnectKidsIot)
+            //         }
+            //     }
+            //     break
+            // case Cmd.ConnectMqtt:
+            //     if (recvString.includes(mqtthost_def)) {
+            //         recvString = recvString.slice(recvString.indexOf(mqtthost_def))
+            //         if (recvString.includes("OK")) {
+            //             mqttBrokerConnected = true
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.ConnectMqtt)
+            //         } else if (recvString.includes("ERROR")) {
+            //             mqttBrokerConnected = false
+            //             recvString = ""
+            //             control.raiseEvent(EspEventSource, EspEventValue.ConnectMqtt)
+            //         }
+            //     }
+            //     break
         }
     })
 }
