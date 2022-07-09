@@ -358,6 +358,13 @@ namespace ESP8266_IoT {
         //control.waitForEvent(EspEventSource, EspEventValue.PostIFTTT)
     }
 
+    export function postIFTTT_TEST(): void {
+        let sendST1 = "AT+HTTPCLIENT=3,1,\"https://maker.ifttt.com/trigger/" + iftttevent_def + "/with/key/" + iftttkey_def + "\",,,2,"
+        let sendST = sendST1
+        sendAT(sendST, 1000)
+        //control.waitForEvent(EspEventSource, EspEventValue.PostIFTTT)
+    }
+
     /**
      * on serial received data
      */
